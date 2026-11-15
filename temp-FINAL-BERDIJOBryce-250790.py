@@ -85,7 +85,35 @@ class POSMachine:
         print("4 - Close the POS machine")
     
     def setPriceList(self):
-        print("setPricelist")
+        FileofProductList = input()
+        try:
+            if ".txt" in FileofProductList:
+                ProductListFromTXT = open(FileofProductList, "r")
+                ProductListAsList = ProductListFromTXT.readlines()
+                ProductListRemovedLines = [x.replace("\n", "") for x in ProductListAsList]
+                ProductList = [x.split("\t") for x in ProductListRemovedLines]
+                ProductListFromTXT.close()
+
+                self.__priceListofProducts__.clear()
+                for x in ProductList:
+                    if len(x) == 3:
+                        self.__priceListofProducts__.append(x)
+
+                
+            elif ".csv" in FileofProductList:
+                ProductListFromCSV = pd.read_csv(FileofProductList)
+                ProductList = [ProductListFromCSV.columns.tolist()] + ProductListFromCSV.to_numpy().tolist()
+                self.__priceListofProducts__.clear()
+                for x in ProductList:
+                    self.__priceListofProducts__.append(x)
+            else:
+                print("Invalid file type")
+        except:
+            print("File not found")
+
+        print(self.__priceListofProducts__)
+        
+        
         
         
         # """
@@ -99,6 +127,11 @@ class POSMachine:
         # pass
     
     def printPriceList(self):
+        if len(self.__priceListofProducts__) == 0:
+            print("No list Inputted")
+        else:
+            for EachProduct in self.__priceListofProducts__:
+                print("{0: <4} {1: <35} {2}".format(EachProduct[0], EachProduct[1], EachProduct[2]))
         print("printPriceList")
         # """
         # Print the current price list
@@ -109,7 +142,26 @@ class POSMachine:
         # pass
     
     def makeNewTransaction(self):
-        print("makeNewTransaction")
+        #Work In progress
+        if len(self.__priceListofProducts__) == 0 :
+            print("List of Products in Empty")
+        else:
+            while True:
+                ProductInputted = input()
+                if ProductInputted == "":
+                    break
+                else:
+                    ProductExist = False
+                    for Eachproduct in self.__priceListofProducts__:
+                        if (ProductInputted == str(Eachproduct[0])) and (ProductInputted != "ID"):
+                            ProductExist = True
+                            break
+                    if ProductExist == True:
+                        print(f"Product exists {ProductInputted}")
+                    else:
+                        print("product does not exist")
+                
+
         # """
         # Create a new transaction.
         # Have the user add products (given a quantity >= 1).
@@ -123,14 +175,7 @@ class POSMachine:
     def addProductToTransaction(self, productID, quantity):
         print("H")
         
-        # """
-        # Calculate the price for the given product and quantity
-        # and add this to the current invoice
         
-        # Remove/delete the "pass" keyword below.
-        # """
-        # # Add your code here
-        # pass
     def createSalesInvoice(self):
         print("createSalesInvoice")
         # """
