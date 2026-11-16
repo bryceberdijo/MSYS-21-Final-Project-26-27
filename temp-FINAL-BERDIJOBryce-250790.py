@@ -1,6 +1,5 @@
 # Problem: POS Machine
 
-
 import pandas as pd
 
 class POSMachine:
@@ -8,6 +7,13 @@ class POSMachine:
     def __init__(self):
         self.__priceListofProducts__ = []
         self.__fullTransactionList__ = [] # Records of all of the invoive
+        
+        """
+        Initialize the fields.
+        
+        Make sure that the last line of this method is the following:
+        self.start()
+        """
         self.start()
         
         
@@ -43,7 +49,11 @@ class POSMachine:
                 continue
 
     
-                  
+            
+
+        
+
+                
     def printWelcomeMessage(self):
         print("Welcome to the Point of Sales program")
         print("You will be able to seamlessly track and process sales transactions for each product in your business")
@@ -169,21 +179,29 @@ class POSMachine:
         
             
     def createSalesInvoice(self):
+        AllProducts = []
         if len(self.__fullTransactionList__) == 0:
             print("No Transactions Listed")
         else:
             title = "Sales Invoice"
             Labels = "{0}\t{1}\t{2}\t{3}\t{4}".format("ID", "Product", "Price", "Quantity", "Total")
-            AllProducts = [title, Labels]
+            AllProducts.append(title)
+            AllProducts.append(Labels)
             GrandTotal = 0
             for EachProduct in self.__fullTransactionList__:
                 AllProducts.append("{0}\t{1}\t{2}\t{3}\t{4}".format(EachProduct[0], EachProduct[1], EachProduct[2], EachProduct[3], EachProduct[4]))
                 GrandTotal += int(EachProduct[4])
             AllProducts.append("\t\t\tGrand Total {0}".format(GrandTotal))
-            NewInvoiceFile = open("Invoice.txt", "w")
+            NewInvoiceFile = open("invoice.txt", "w")
             for x in AllProducts:
                 NewInvoiceFile.write("{0}\n".format(x))
             NewInvoiceFile.close()
         self.__fullTransactionList__.clear()
 
 Account1 = POSMachine()
+
+# Sources
+# Built-in functions. (n.d.-d). Python Documentation. https://docs.python.org/3/builtins/functions.html#open
+# pandas.Series.tolist — pandas 2.1.4 documentation. (n.d.). https://pandas.pydata.org/pandas-docs/version/2.1/reference/api/pandas.Series.tolist.html
+# pandas.DataFrame.to_numpy — pandas 3.1.1 documentation. (n.d.). https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_numpy.html#pandas.DataFrame.to_numpy
+# pandas.DataFrame.columns — pandas 3.1.1 documentation. (n.d.). https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.columns.html
