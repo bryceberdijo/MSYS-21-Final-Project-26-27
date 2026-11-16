@@ -196,7 +196,7 @@ class POSMachine:
             for x in AllProducts:
                 NewInvoiceFile.write("{0}\n".format(x))
             NewInvoiceFile.close()
-        self.__fullTransactionList__.clear()
+            self.__fullTransactionList__.clear()
 
 Account1 = POSMachine()
 
