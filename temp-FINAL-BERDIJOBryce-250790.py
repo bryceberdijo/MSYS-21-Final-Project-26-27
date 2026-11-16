@@ -1,20 +1,13 @@
 # Problem: POS Machine
 
+
 import pandas as pd
 
 class POSMachine:
     
     def __init__(self):
         self.__priceListofProducts__ = []
-        self.__StartUpSystemforWelcomeFunc__ = True
-        self.__fullTransactionList__ = []
-        
-        """
-        Initialize the fields.
-        
-        Make sure that the last line of this method is the following:
-        self.start()
-        """
+        self.__fullTransactionList__ = [] # Records of all of the invoive
         self.start()
         
         
@@ -26,55 +19,36 @@ class POSMachine:
         """
         FinalDecision = False
         self.printWelcomeMessage()
-        self.printAllOptions()
-        try:
-            inp = int(input())
-            while True:
-                try:
-                    if inp == 1:
-                        self.setPriceList()
-                    elif inp == 2:
-                        self.printPriceList()
-                    elif inp == 3:
-                        self.makeNewTransaction()
-                    elif inp == 4:
-                        while True:
-                            inpExit = input("Are you sure you want to Exit: (Y/N) ")
-                            if inpExit.upper() == "Y":
-                                FinalDecision = True
-                                break
-                            elif inpExit.upper() == "N":
-                                break
-                            else:
-                                continue
-                    if FinalDecision == True:
-                        break
-                    self.printAllOptions()
-                    inp = int(input())
-                except:
-                    continue
-        except:
-            self.start()
+        while True:
+            try:
+                self.printAllOptions()
+                inp = int(input())
+                if inp == 1:
+                    self.setPriceList()
+                elif inp == 2:
+                    self.printPriceList()
+                elif inp == 3:
+                    self.makeNewTransaction()
+                elif inp == 4:
+                    while True:
+                        inpExit = input("Are you sure you want to Exit: (Y/N) ")
+                        if inpExit.upper() == "Y":
+                            FinalDecision = True
+                            break
+                        elif inpExit.upper() == "N":
+                            break
+                if FinalDecision == True:
+                    break
+            except:
+                continue
+
     
-            
-
-        
-
-                
+                  
     def printWelcomeMessage(self):
-        if self.__StartUpSystemforWelcomeFunc__ == True:
-            print("Welcome to the Point of Sales program")
-            print("You will be able to seamlessly track and process sales transactions for each product in your business")
-            print("_________________________________________________________________________________")
-            self.__StartUpSystemforWelcomeFunc__ = False
-        
-        # """
-        # Print a welcome message for the user.
-        
-        # Remove/delete the "pass" keyword below.
-        # """
-        # # Add your code here
-        # pass
+        print("Welcome to the Point of Sales program")
+        print("You will be able to seamlessly track and process sales transactions for each product in your business")
+        print("_________________________________________________________________________________")
+
             
     def printAllOptions(self):
         # Print all actions the user can do
@@ -85,7 +59,7 @@ class POSMachine:
         print("4 - Close the POS machine")
     
     def setPriceList(self):
-        FileofProductList = input()
+        FileofProductList = input("Please enter the name of the price list file ") # added changes
         try:
             if ".txt" in FileofProductList:
                 ProductListFromTXT = open(FileofProductList, "r")
@@ -110,21 +84,6 @@ class POSMachine:
                 print("Invalid file type")
         except:
             print("File not found")
-
-        print(self.__priceListofProducts__)
-        
-        
-        
-        
-        # """
-        # Load the price list from the provided file.
-        # The program should send a warning if the provided file
-        # is invalid.
-        
-        # Remove/delete the "pass" keyword below.
-        # """
-        # # Add your code here
-        # pass
     
     def printPriceList(self):
         if len(self.__priceListofProducts__) == 0:
@@ -132,62 +91,99 @@ class POSMachine:
         else:
             for EachProduct in self.__priceListofProducts__:
                 print("{0: <4} {1: <35} {2}".format(EachProduct[0], EachProduct[1], EachProduct[2]))
-        print("printPriceList")
-        # """
-        # Print the current price list
-        
-        # Remove/delete the "pass" keyword below.
-        # """
-        # # Add your code here
-        # pass
+
     
     def makeNewTransaction(self):
-        #Work In progress
         if len(self.__priceListofProducts__) == 0 :
             print("List of Products in Empty")
         else:
-            while True:
-                ProductInputted = input()
+            while True:    
+                ProductInputted = input("Input the Product ")
                 if ProductInputted == "":
-                    break
+                    self.createSalesInvoice()
+                    break # This will break the loop and print the transaction
                 else:
                     ProductExist = False
+                    NumCount = 0 # Since the for loop is going through each list in the list of products, it will stop the moment the loop arrives at ProductInputted
                     for Eachproduct in self.__priceListofProducts__:
                         if (ProductInputted == str(Eachproduct[0])) and (ProductInputted != "ID"):
                             ProductExist = True
                             break
-                    if ProductExist == True:
-                        print(f"Product exists {ProductInputted}")
+                        else:
+                            NumCount += 1
+                    if ProductExist == True: # Since the Product that the user inputs is Valid, the code will ask the use for a number
+                        QuantityExist = False
+                        while True:
+                            try:
+                                ProductQuantity = input("Input the Quantity ")
+                                if ProductQuantity == "":
+                                    self.createSalesInvoice()
+                                    break
+                                elif int(ProductQuantity) >= 1:
+                                    QuantityExist = True
+                                    break
+                                else:
+                                    print("Please Input a positive number")
+                                    continue
+                            except:
+                                print("Please Input a real number")
+                                continue
+                        if QuantityExist == True:
+                            self.addProductToTransaction(ProductInputted, int(ProductQuantity))
+                            # break # because instructions were unclear if the makeNewTransaction method must be constantly loop until the user gives a blank input and prints the invoice, I have added a "break" to stop the loop to go back into the main Start() method
+                        else:
+                            break
                     else:
-                        print("product does not exist")
-                
+                        print("Product ID does not exist. Please input the Product ID")
+            
 
-        # """
-        # Create a new transaction.
-        # Have the user add products (given a quantity >= 1).
-        # When the user inputs a blank, print the invoice.
-        
-        # Remove/delete the "pass" keyword below.
-        # """
-        # # Add your code here
          
     
     def addProductToTransaction(self, productID, quantity):
-        print("H")
+        numCount = 0 #Similar to NumCount in the makeNewTransaction method, it will search through each of entry of the list to see which list inside the list has the same product name. NumCount acts as the final location of the selected product inside the list.
+        confirmedDuplicate = False
+        numCountDuplicate = 0
+        for EachProduct in self.__priceListofProducts__:
+            if productID == str(EachProduct[0]):
+                break
+            else:
+                numCount += 1
+        ProductPriceChecking = self.__priceListofProducts__[numCount][2]
+        if ProductPriceChecking == "":
+            ProductPrice = 0
+        else:
+            ProductPrice = int(self.__priceListofProducts__[numCount][2])
+        for EachSale in self.__fullTransactionList__: # This Section determines if the product ID was previous inputted to the invoice
+            if productID == str(EachSale[0]):
+                confirmedDuplicate = True
+                break
+            else:
+                numCountDuplicate += 1
+        if confirmedDuplicate == True: # This Section adds the quantity and cost into the entry that has the same product
+            previousQuantity = self.__fullTransactionList__[numCountDuplicate][3]
+            self.__fullTransactionList__[numCountDuplicate][3] = previousQuantity + quantity
+            previousTotalCost = self.__fullTransactionList__[numCountDuplicate][4]
+            self.__fullTransactionList__[numCountDuplicate][4] = previousTotalCost + (quantity*ProductPrice)
+        else:
+            self.__fullTransactionList__.append([self.__priceListofProducts__[numCount][0], self.__priceListofProducts__[numCount][1], self.__priceListofProducts__[numCount][2], quantity, (quantity*ProductPrice)])
         
-        
+            
     def createSalesInvoice(self):
-        print("createSalesInvoice")
-        # """
-        # Print (into the console) the sales invoice, detailing
-        # the price and quanity of the products purchased, and
-        # the total amount.
-        
-        # Save the same print output as a .txt file.
-        
-        # Remove/delete the "pass" keyword  below.
-        # """
-        # # Add your code here
-        # pass
+        if len(self.__fullTransactionList__) == 0:
+            print("No Transactions Listed")
+        else:
+            title = "Sales Invoice"
+            Labels = "{0}\t{1}\t{2}\t{3}\t{4}".format("ID", "Product", "Price", "Quantity", "Total")
+            AllProducts = [title, Labels]
+            GrandTotal = 0
+            for EachProduct in self.__fullTransactionList__:
+                AllProducts.append("{0}\t{1}\t{2}\t{3}\t{4}".format(EachProduct[0], EachProduct[1], EachProduct[2], EachProduct[3], EachProduct[4]))
+                GrandTotal += int(EachProduct[4])
+            AllProducts.append("\t\t\tGrand Total {0}".format(GrandTotal))
+            NewInvoiceFile = open("Invoice.txt", "w")
+            for x in AllProducts:
+                NewInvoiceFile.write("{0}\n".format(x))
+            NewInvoiceFile.close()
+        self.__fullTransactionList__.clear()
 
 Account1 = POSMachine()
