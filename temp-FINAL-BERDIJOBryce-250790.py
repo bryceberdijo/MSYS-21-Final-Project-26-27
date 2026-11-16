@@ -2,6 +2,8 @@
 
 import pandas as pd
 
+from tkinter import *
+
 class POSMachine:
     
     def __init__(self):
@@ -198,10 +200,24 @@ class POSMachine:
             NewInvoiceFile.close()
             self.__fullTransactionList__.clear()
 
-Account1 = POSMachine()
+#Account1 = POSMachine()
 
 # Sources
 # Built-in functions. (n.d.-d). Python Documentation. https://docs.python.org/3/builtins/functions.html#open
 # pandas.Series.tolist — pandas 2.1.4 documentation. (n.d.). https://pandas.pydata.org/pandas-docs/version/2.1/reference/api/pandas.Series.tolist.html
 # pandas.DataFrame.to_numpy — pandas 3.1.1 documentation. (n.d.). https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_numpy.html#pandas.DataFrame.to_numpy
 # pandas.DataFrame.columns — pandas 3.1.1 documentation. (n.d.). https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.columns.html
+
+window = Tk()
+window.title("POS Machine")
+
+window.geometry("400x400")
+
+label = Label(window, text="POS Machine")
+
+label.grid(row=0, column=0)
+
+Label2 = Label(window, text="test 1")
+Label2.grid(row=1, column=1)
+
+window.mainloop()
