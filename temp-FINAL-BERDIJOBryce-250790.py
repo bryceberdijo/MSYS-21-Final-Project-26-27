@@ -3,6 +3,9 @@
 import pandas as pd
 
 from tkinter import *
+from tkinter.scrolledtext import ScrolledText
+
+
 
 class POSMachine:
     
@@ -138,10 +141,8 @@ class POSMachine:
                                     QuantityExist = True
                                     break
                                 else:
-                                    print("Please Input a positive number")
                                     continue
                             except:
-                                print("Please Input a real number")
                                 continue
                         if QuantityExist == True:
                             self.addProductToTransaction(ProductInputted, int(ProductQuantity))
@@ -247,7 +248,7 @@ class POSMachine:
 window = Tk()
 window.title("POS Machine")
 
-window.geometry("400x400")
+window.geometry("500x500")
 
 # label = Label(window, text="POS Machine")
 
@@ -299,8 +300,20 @@ def show_SetPriceList():
     MainMenu.pack_forget()
     SetPriceList.pack(fill="both", expand=True)
 
+
+def show_NewsTransactionWindow():
+    MainMenu.pack_forget()
+    NewsTransactionWindow.pack(fill="both", expand=True)
+
+
+def show_ClosePOS():
+    MainMenu.pack_forget()
+    ClosePOS.pack(fill="both", expand=True)
+
 def show_mainmenu():
     SetPriceList.pack_forget()
+    ClosePOS.pack_forget()
+    NewsTransactionWindow.pack_forget()
     MainMenu.pack(fill="both", expand=True)
 
 MainMenu = Frame(window)
@@ -308,8 +321,8 @@ MainMenu = Frame(window)
 Label1 = Label(MainMenu, text="This is the POS Machine Main Menu").grid(row=0, column=0)
 SetPrice = Button(MainMenu, text="Set Price List", command=show_SetPriceList).grid(row=1, column=0)
 ShowPrice = Button(MainMenu, text="Show Price List").grid(row=2, column=0)
-NewsTransaction = Button(MainMenu, text="Make news transaction").grid(row=3, column=0)
-ClosePOSMachine = Button(MainMenu, text="Exit").grid(row=4, column=0)
+NewsTransaction = Button(MainMenu, text="Make news transaction", command=show_NewsTransactionWindow).grid(row=3, column=0)
+ClosePOSMachine = Button(MainMenu, text="Exit", command=show_ClosePOS).grid(row=4, column=0)
 
 
 
@@ -318,17 +331,29 @@ ClosePOSMachine = Button(MainMenu, text="Exit").grid(row=4, column=0)
 MainMenu.pack(fill="both", expand=True)
 
 SetPriceList = Frame(window)
-Label2 = Label(SetPriceList, text="SetPriceList").pack(side=RIGHT)
-
-
+Label2 = Label(SetPriceList, text="SetPriceList").pack(side=LEFT)
+contents = ScrolledText(SetPriceList)
+contents.pack(side=BOTTOM, expand=True, fill=BOTH)
 SetPrice = Button(SetPriceList, text="Pick File").pack(side=LEFT)
 BacktoMenu = Button(SetPriceList, text="Back to main Menu", command=show_mainmenu).pack(side=LEFT)
 
 
 
 ShowPriceList = Frame(window)
+
+
+
 NewsTransactionWindow = Frame(window)
+Label4 = Label(NewsTransactionWindow, text="Make Transaction").pack(side=TOP)
+BacktoMenu = Button(NewsTransactionWindow, text="Back to main Menu", command=show_mainmenu).pack(side=LEFT)
+
+
 ClosePOS = Frame(window)
+LabelPOS = Label(ClosePOS, text="Close").pack(side=TOP)
+Yes = Button(ClosePOS, text="Yes", command=window.destroy).pack(side=LEFT)
+No = Button(ClosePOS, text="No", command=show_mainmenu).pack(side=LEFT)
+
+
 
 
 window.mainloop()
