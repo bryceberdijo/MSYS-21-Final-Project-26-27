@@ -149,7 +149,7 @@ class POSMachine:
                         else:
                             break
                     else:
-                        print("Product ID does not exist. Please input the Product ID")
+                        return "Product ID does not exist. Please input the Product ID"
             
 
          
@@ -223,14 +223,16 @@ class POSMachine:
                 ShownTransactionHistory[numCountDuplicate][4] = previousTotalSales + EachSalesRecord[4]
             else:
                 ShownTransactionHistory.append(EachSalesRecord)
+        Saleshistory = ""
         for Sale in ShownTransactionHistory:
             print(Sale)
+            #Saleshistory = Saleshistory + "{0}\t{1}\t{2}\t{3}\t{4}".format(Sale[0], Sale[1], Sale[2], Sale[3], Sale[4])
 
 
 
 
 
-Account1 = POSMachine()
+#Account1 = POSMachine()
 
 
 
@@ -242,10 +244,10 @@ Account1 = POSMachine()
 # pandas.DataFrame.to_numpy — pandas 3.1.1 documentation. (n.d.). https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_numpy.html#pandas.DataFrame.to_numpy
 # pandas.DataFrame.columns — pandas 3.1.1 documentation. (n.d.). https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.columns.html
 
-# window = Tk()
-# window.title("POS Machine")
+window = Tk()
+window.title("POS Machine")
 
-# window.geometry("400x400")
+window.geometry("400x400")
 
 # label = Label(window, text="POS Machine")
 
@@ -254,4 +256,79 @@ Account1 = POSMachine()
 # Label2 = Label(window, text="test 1")
 # Label2.grid(row=1, column=1)
 
-# window.mainloop()
+
+# def show_frame2():
+#     frame1.pack_forget()
+#     frame3.pack_forget() 
+#     frame2.pack(fill="both", expand=True)
+
+# def show_frame1():
+#     frame2.pack_forget()
+#     frame3.pack_forget() 
+#     frame1.pack(fill="both", expand=True)
+
+# def show_frame3():
+#     frame1.pack_forget()
+#     frame2.pack_forget()
+#     frame3.pack(fill="both", expand=True)
+
+
+
+# frame1 = Frame(window)
+# Label1 = Label(frame1, text="This is Frame 1")
+# Label1.grid(row=1, column=0)
+# label1A = Label(frame1, text="POS Machine")
+# label1A.grid(row=0, column=0)
+# Button1 = Button(frame1, text="Switch to Frame 2", command=show_frame2).grid(row=2, column=0)
+# Button2 = Button(frame1, text="Switch to Frame 3", command=show_frame3).grid(row=3, column=0)
+
+# frame2 = Frame(window)
+# Label2 = Label(frame2, text="This is Frame 2").pack(pady=20)
+# Button2 = Button(frame2, text="Switch to Frame 1", command=show_frame1).pack()
+
+# frame3 = Frame(window)
+# Label3 = Label(frame3, text="This is Frame 3").pack(pady=20)
+# Button3 = Button(frame3, text="Switch to Frame 2", command=show_frame2).pack(pady=30)
+# Button3A = Button(frame3, text="Switch to Frame 1", command=show_frame1).pack(pady=30)
+
+
+# frame1.pack(fill="both", expand=True)
+
+
+def show_SetPriceList():
+    MainMenu.pack_forget()
+    SetPriceList.pack(fill="both", expand=True)
+
+def show_mainmenu():
+    SetPriceList.pack_forget()
+    MainMenu.pack(fill="both", expand=True)
+
+MainMenu = Frame(window)
+
+Label1 = Label(MainMenu, text="This is the POS Machine Main Menu").grid(row=0, column=0)
+SetPrice = Button(MainMenu, text="Set Price List", command=show_SetPriceList).grid(row=1, column=0)
+ShowPrice = Button(MainMenu, text="Show Price List").grid(row=2, column=0)
+NewsTransaction = Button(MainMenu, text="Make news transaction").grid(row=3, column=0)
+ClosePOSMachine = Button(MainMenu, text="Exit").grid(row=4, column=0)
+
+
+
+
+
+MainMenu.pack(fill="both", expand=True)
+
+SetPriceList = Frame(window)
+Label2 = Label(SetPriceList, text="SetPriceList").pack(side=RIGHT)
+
+
+SetPrice = Button(SetPriceList, text="Pick File").pack(side=LEFT)
+BacktoMenu = Button(SetPriceList, text="Back to main Menu", command=show_mainmenu).pack(side=LEFT)
+
+
+
+ShowPriceList = Frame(window)
+NewsTransactionWindow = Frame(window)
+ClosePOS = Frame(window)
+
+
+window.mainloop()
