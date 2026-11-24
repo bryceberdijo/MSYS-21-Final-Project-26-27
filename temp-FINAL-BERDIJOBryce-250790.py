@@ -104,11 +104,13 @@ class POSMachine:
             print("File not found")
     
     def printPriceList(self):
+        FullListofProducts = ""
         if len(self.__priceListofProducts__) == 0:
-            return "No list Inputted"
+            FullListofProducts = FullListofProducts + "No list Inputted"
         else:
             for EachProduct in self.__priceListofProducts__:
-                return "{0: <4} {1: <35} {2}".format(EachProduct[0], EachProduct[1], EachProduct[2])
+                FullListofProducts = FullListofProducts + "{0: <4} {1: <35} {2}\n".format(EachProduct[0], EachProduct[1], EachProduct[2])
+        return FullListofProducts
 
     
     def makeNewTransaction(self):
@@ -366,7 +368,7 @@ MainMenu.pack(fill="both", expand=True)
 
 SetPriceList = Frame(window)
 Label2 = Label(SetPriceList, text="SetPriceList").pack(side=LEFT)
-contents = ScrolledText(SetPriceList)
+contents = Label(SetPriceList, text=Account1.printPriceList())
 contents.pack(side=BOTTOM, expand=True, fill=BOTH)
 SetPrice = Button(SetPriceList, text="Pick File").pack(side=LEFT)
 BacktoMenu1 = Button(SetPriceList, text="Back to main Menu", command=show_mainmenu).pack(side=LEFT)
@@ -389,6 +391,6 @@ Yes = Button(ClosePOS, text="Yes", command=window.destroy).pack(side=LEFT)
 No = Button(ClosePOS, text="No", command=show_mainmenu).pack(side=LEFT)
 
 
-
+print(Account1.printPriceList())
 
 window.mainloop()
