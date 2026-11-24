@@ -310,9 +310,14 @@ def show_ClosePOS():
     MainMenu.pack_forget()
     ClosePOS.pack(fill="both", expand=True)
 
+def show_ShowSales():
+    MainMenu.pack_forget()
+    ShowSales.pack(fill="both", expand=True)
+
 def show_mainmenu():
     SetPriceList.pack_forget()
     ClosePOS.pack_forget()
+    ShowSales.pack_forget()
     NewsTransactionWindow.pack_forget()
     MainMenu.pack(fill="both", expand=True)
 
@@ -320,7 +325,7 @@ MainMenu = Frame(window)
 
 Label1 = Label(MainMenu, text="This is the POS Machine Main Menu").grid(row=0, column=0)
 SetPrice = Button(MainMenu, text="Set Price List", command=show_SetPriceList).grid(row=1, column=0)
-ShowPrice = Button(MainMenu, text="Show Price List").grid(row=2, column=0)
+ShowSales = Button(MainMenu, text="Show Sales Report", command=show_ShowSales).grid(row=2, column=0)
 NewsTransaction = Button(MainMenu, text="Make news transaction", command=show_NewsTransactionWindow).grid(row=3, column=0)
 ClosePOSMachine = Button(MainMenu, text="Exit", command=show_ClosePOS).grid(row=4, column=0)
 
@@ -335,17 +340,18 @@ Label2 = Label(SetPriceList, text="SetPriceList").pack(side=LEFT)
 contents = ScrolledText(SetPriceList)
 contents.pack(side=BOTTOM, expand=True, fill=BOTH)
 SetPrice = Button(SetPriceList, text="Pick File").pack(side=LEFT)
-BacktoMenu = Button(SetPriceList, text="Back to main Menu", command=show_mainmenu).pack(side=LEFT)
+BacktoMenu1 = Button(SetPriceList, text="Back to main Menu", command=show_mainmenu).pack(side=LEFT)
 
 
 
-ShowPriceList = Frame(window)
-
+ShowSales = Frame(window)
+LabelSaes = Label(ShowSales, text="show Sales report").pack(side=TOP)
+BacktoMenu2 = Button(ShowSales, text="Back to main Menu", command=show_mainmenu).pack(side=LEFT)
 
 
 NewsTransactionWindow = Frame(window)
 Label4 = Label(NewsTransactionWindow, text="Make Transaction").pack(side=TOP)
-BacktoMenu = Button(NewsTransactionWindow, text="Back to main Menu", command=show_mainmenu).pack(side=LEFT)
+BacktoMenu3 = Button(NewsTransactionWindow, text="Back to main Menu", command=show_mainmenu).pack(side=LEFT)
 
 
 ClosePOS = Frame(window)
