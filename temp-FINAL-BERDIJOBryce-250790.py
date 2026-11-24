@@ -1,9 +1,12 @@
 # Problem: POS Machine
 
 import pandas as pd
+import os
 
 from tkinter import *
-from tkinter.scrolledtext import ScrolledText
+from tkinter import filedialog
+
+
 
 
 
@@ -76,32 +79,37 @@ class POSMachine:
         print("3 - Make a new transaction")
         print("4 - Close the POS machine")
     
-    def setPriceList(self, FileNameEntered):
-        FileofProductList = FileNameEntered # added changes
-        try:
-            if ".txt" in FileofProductList:
-                ProductListFromTXT = open(FileofProductList, "r")
-                ProductListAsList = ProductListFromTXT.readlines()
-                ProductListRemovedLines = [x.replace("\n", "") for x in ProductListAsList]
-                ProductList = [x.split("\t") for x in ProductListRemovedLines]
-                ProductListFromTXT.close()
+    def setPriceList(self):
+        FileofProductListInitial = filedialog.askopenfilename(
+            title="Select a file",
+            filetypes=[("Text files", "*.txt"), ("CSV files", "*.csv"), ("All files", "*.*")],
+        ) 
+        if FileofProductListInitial:
+            FileofProductList = os.path.basename(FileofProductListInitial)
+            try:
+                if ".txt" in FileofProductList:
+                    ProductListFromTXT = open(FileofProductList, "r")
+                    ProductListAsList = ProductListFromTXT.readlines()
+                    ProductListRemovedLines = [x.replace("\n", "") for x in ProductListAsList]
+                    ProductList = [x.split("\t") for x in ProductListRemovedLines]
+                    ProductListFromTXT.close()
 
-                self.__priceListofProducts__.clear()
-                for x in ProductList:
-                    if len(x) == 3:
+                    self.__priceListofProducts__.clear()
+                    for x in ProductList:
+                        if len(x) == 3:
+                            self.__priceListofProducts__.append(x)
+
+                    
+                elif ".csv" in FileofProductList:
+                    ProductListFromCSV = pd.read_csv(FileofProductList)
+                    ProductList = [ProductListFromCSV.columns.tolist()] + ProductListFromCSV.to_numpy().tolist()
+                    self.__priceListofProducts__.clear()
+                    for x in ProductList:
                         self.__priceListofProducts__.append(x)
-
-                
-            elif ".csv" in FileofProductList:
-                ProductListFromCSV = pd.read_csv(FileofProductList)
-                ProductList = [ProductListFromCSV.columns.tolist()] + ProductListFromCSV.to_numpy().tolist()
-                self.__priceListofProducts__.clear()
-                for x in ProductList:
-                    self.__priceListofProducts__.append(x)
-            else:
-                print("Invalid file type")
-        except:
-            print("File not found")
+                else:
+                    return "Invalid file type"
+            except:
+                return "File not found"
     
     def printPriceList(self):
         FullListofProducts = ""
@@ -264,17 +272,15 @@ class POSMachine:
 
 
 
-Account1 = POSMachine()
-
-
-
-
+Account = POSMachine()
 
 # Sources
-# Built-in functions. (n.d.-d). Python Documentation. https://docs.python.org/3/builtins/functions.html#open
+# Built-in functions. (n.d.-d). Python Documentation. https://docs.python.org/3/builtins/functions.html
 # pandas.Series.tolist — pandas 2.1.4 documentation. (n.d.). https://pandas.pydata.org/pandas-docs/version/2.1/reference/api/pandas.Series.tolist.html
 # pandas.DataFrame.to_numpy — pandas 3.1.1 documentation. (n.d.). https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_numpy.html#pandas.DataFrame.to_numpy
 # pandas.DataFrame.columns — pandas 3.1.1 documentation. (n.d.). https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.columns.html
+# os.path — Common pathname manipulations. (n.d.). Python Documentation. https://docs.python.org/3/library/os.path.html
+# Tkinter dialogs. (n.d.). Python Documentation. https://docs.python.org/3/library/dialog.html?
 
 window = Tk()
 window.title("POS Machine")
@@ -368,10 +374,19 @@ MainMenu.pack(fill="both", expand=True)
 
 SetPriceList = Frame(window)
 Label2 = Label(SetPriceList, text="SetPriceList").pack(side=LEFT)
-contents = Label(SetPriceList, text=Account1.printPriceList())
+contents = Label(SetPriceList, text=Account.printPriceList())
 contents.pack(side=BOTTOM, expand=True, fill=BOTH)
-SetPrice = Button(SetPriceList, text="Pick File").pack(side=LEFT)
-BacktoMenu1 = Button(SetPriceList, text="Back to main Menu", command=show_mainmenu).pack(side=LEFT)
+NoFile = Label(SetPriceList, text="")
+NoFile.pack(side=BOTTOM, expand=True, fill=BOTH)
+
+
+def OpenFileForPriceList():
+    NoFile.config(text=Account.setPriceList())
+    contents.config(text=Account.printPriceList())
+
+
+SetPrice = Button(SetPriceList, text="Pick File", command=OpenFileForPriceList).pack(side=TOP)
+BacktoMenu1 = Button(SetPriceList, text="Back to main Menu", command=show_mainmenu).pack(side=TOP)
 
 
 
@@ -391,6 +406,6 @@ Yes = Button(ClosePOS, text="Yes", command=window.destroy).pack(side=LEFT)
 No = Button(ClosePOS, text="No", command=show_mainmenu).pack(side=LEFT)
 
 
-print(Account1.printPriceList())
+print(Account.printPriceList())
 
 window.mainloop()
