@@ -20,41 +20,41 @@ class POSMachine:
         Make sure that the last line of this method is the following:
         self.start()
         """
-        self.start()
+
         
         
     
-    def start(self):
-        """
-        Update this looping interface.
-        Make sure that it follows the instructions completely.
-        """
-        FinalDecision = False
-        self.printWelcomeMessage()
-        while True:
-            try:
-                self.printAllOptions()
-                inp = int(input())
-                if inp == 1:
-                    self.setPriceList()
-                elif inp == 2:
-                    self.printPriceList()
-                elif inp == 3:
-                    self.makeNewTransaction()
-                elif inp == 4:
-                    while True:
-                        inpExit = input("Are you sure you want to Exit: (Y/N) ")
-                        if inpExit.upper() == "Y":
-                            FinalDecision = True
-                            break
-                        elif inpExit.upper() == "N":
-                            break
-                elif inp == 5:
-                    self.SalesReport()
-                if FinalDecision == True:
-                    break
-            except:
-                continue
+    # def start(self): # removed for now to not make it start
+    #     """
+    #     Update this looping interface.
+    #     Make sure that it follows the instructions completely.
+    #     """
+    #     FinalDecision = False
+    #     self.printWelcomeMessage()
+    #     while True:
+    #         try:
+    #             self.printAllOptions()
+    #             inp = int(input())
+    #             if inp == 1:
+    #                 self.setPriceList()
+    #             elif inp == 2:
+    #                 self.printPriceList()
+    #             elif inp == 3:
+    #                 self.makeNewTransaction()
+    #             elif inp == 4:
+    #                 while True:
+    #                     inpExit = input("Are you sure you want to Exit: (Y/N) ")
+    #                     if inpExit.upper() == "Y":
+    #                         FinalDecision = True
+    #                         break
+    #                     elif inpExit.upper() == "N":
+    #                         break
+    #             elif inp == 5:
+    #                 self.SalesReport()
+    #             if FinalDecision == True:
+    #                 break
+    #         except:
+    #             continue
 
     
             
@@ -76,8 +76,8 @@ class POSMachine:
         print("3 - Make a new transaction")
         print("4 - Close the POS machine")
     
-    def setPriceList(self):
-        FileofProductList = input("Please enter the name of the price list file ") # added changes
+    def setPriceList(self, FileNameEntered):
+        FileofProductList = FileNameEntered # added changes
         try:
             if ".txt" in FileofProductList:
                 ProductListFromTXT = open(FileofProductList, "r")
@@ -105,10 +105,10 @@ class POSMachine:
     
     def printPriceList(self):
         if len(self.__priceListofProducts__) == 0:
-            print("No list Inputted")
+            return "No list Inputted"
         else:
             for EachProduct in self.__priceListofProducts__:
-                print("{0: <4} {1: <35} {2}".format(EachProduct[0], EachProduct[1], EachProduct[2]))
+                return "{0: <4} {1: <35} {2}".format(EachProduct[0], EachProduct[1], EachProduct[2])
 
     
     def makeNewTransaction(self):
@@ -183,7 +183,36 @@ class POSMachine:
         else:
             self.__fullTransactionList__.append([self.__priceListofProducts__[numCount][0], self.__priceListofProducts__[numCount][1], self.__priceListofProducts__[numCount][2], quantity, (quantity*ProductPrice)])
         
-            
+
+    def RemoveProductToTransaction(self, productID, quantity):
+        numCount = 0 #Similar to NumCount in the makeNewTransaction method, it will search through each of entry of the list to see which list inside the list has the same product name. NumCount acts as the final location of the selected product inside the list.
+        confirmedDuplicate = False
+        numCountDuplicate = 0
+        for EachProduct in self.__priceListofProducts__:
+            if productID == str(EachProduct[0]):
+                break
+            else:
+                numCount += 1
+        ProductPriceChecking = self.__priceListofProducts__[numCount][2]
+        if ProductPriceChecking == "":
+            ProductPrice = 0
+        else:
+            ProductPrice = int(self.__priceListofProducts__[numCount][2])
+        for EachSale in self.__fullTransactionList__: # This Section determines if the product ID was previous inputted to the invoice
+            if productID == str(EachSale[0]):
+                confirmedDuplicate = True
+                break
+            else:
+                numCountDuplicate += 1
+        if confirmedDuplicate == True: # This Section adds the quantity and cost into the entry that has the same product
+            previousQuantity = self.__fullTransactionList__[numCountDuplicate][3]
+            self.__fullTransactionList__[numCountDuplicate][3] = previousQuantity - quantity
+            previousTotalCost = self.__fullTransactionList__[numCountDuplicate][4]
+            self.__fullTransactionList__[numCountDuplicate][4] = previousTotalCost - (quantity*ProductPrice)
+        else:
+            self.__fullTransactionList__.remove([self.__priceListofProducts__[numCount][0], self.__priceListofProducts__[numCount][1], self.__priceListofProducts__[numCount][2], quantity, (quantity*ProductPrice)])
+                
+    
     def createSalesInvoice(self):
         AllProducts = []
         if len(self.__fullTransactionList__) == 0:
@@ -233,7 +262,7 @@ class POSMachine:
 
 
 
-#Account1 = POSMachine()
+Account1 = POSMachine()
 
 
 
