@@ -228,7 +228,7 @@ class POSMachine:
             for EachProduct in self.__fullTransactionList__:
                 AllProducts.append("{0}\t{1}\t{2}\t{3}\t{4}".format(EachProduct[0], EachProduct[1], EachProduct[2], EachProduct[3], EachProduct[4]))
                 GrandTotal += int(EachProduct[4])
-            AllProducts.append("\t\t\tGrand Total {0}".format(GrandTotal))
+            AllProducts.append("\tGrand Total: \t{0}\t\t".format(GrandTotal))
             #NewInvoiceFile = open("invoice.txt", "w")
             NewLabel = ""
             for x in AllProducts:
@@ -243,22 +243,17 @@ class POSMachine:
 
     def showTransactionRecord(self):
         AllProducts = []
-        NewLabel = ""
-        if len(self.__fullTransactionList__) == 0:
-            NewLabel = NewLabel + "No Products Listed"
+        if len(self.__priceListofProducts__) == 0:
+            pass
         else:
-            title = "Sales Invoice"
-            Labels = "{0}\t{1}\t{2}\t{3}\t{4}".format("ID", "Product", "Price", "Quantity", "Total")
-            AllProducts.append(title)
+            Labels = ["ID", "Product", "Price", "Quantity", "Total"]
             AllProducts.append(Labels)
             GrandTotal = 0
             for EachProduct in self.__fullTransactionList__:
-                AllProducts.append("{0}\t{1}\t{2}\t{3}\t{4}".format(EachProduct[0], EachProduct[1], EachProduct[2], EachProduct[3], EachProduct[4]))
+                AllProducts.append(EachProduct)
                 GrandTotal += int(EachProduct[4])
-            AllProducts.append("\t\t\tGrand Total {0}".format(GrandTotal))
-            for x in AllProducts:
-                NewLabel = NewLabel + x + "\n"      
-        return NewLabel
+            AllProducts.append(["Grand Total: ",""," ", "", str(GrandTotal)])  
+        return AllProducts
             
     # def printPriceList(self):
     #     FullListofProducts = ""
@@ -424,41 +419,81 @@ BacktoMenu2 = Button(ShowSales, text="Back to main Menu", command=show_mainmenu)
 
 
 NewsTransactionWindow = Frame(window)
-Label4 = Label(NewsTransactionWindow, text="Make Transaction").pack(side=TOP)
-BacktoMenu3 = Button(NewsTransactionWindow, text="Back to main Menu", command=show_mainmenu).pack(side=TOP)
+Label4 = Label(NewsTransactionWindow, text="Make Transaction").grid(row=0, column=0)
+BacktoMenu3 = Button(NewsTransactionWindow, text="Back to main Menu", command=show_mainmenu).grid(row=1, column=0)
 ProductIDEntry = Entry(NewsTransactionWindow)
-ProductIDEntry.pack(side=TOP, expand=True, fill=X)
+ProductIDEntry.grid(row=2, column=0, columnspan=4, sticky="ew")
 
 
 QuantityEntry = Entry(NewsTransactionWindow)
-QuantityEntry.pack(side=TOP, expand=True, fill=X)
+QuantityEntry.grid(row=3, column=0, columnspan=4, sticky="ew")
+PrintPrice = Button(NewsTransactionWindow, text="Make Invoice", command=show_mainmenu).grid(row=2, column=5, rowspan=2, sticky="ew")
 
 
 
 
+NewlyAdded = False
 
-LastProduct = ""
-LastQuantity = ""
+Info1ColText = ""
+Info2ColText = ""
+Info3ColText = ""
+Info4ColText = ""
+Info5ColText = ""
 
-FullList = Label(NewsTransactionWindow, text=Account.showTransactionRecord(), font=("Courier", 12))
+Info1Col = Label(NewsTransactionWindow, text=Info1ColText, font=("Courier", 12))
+Info2Col = Label(NewsTransactionWindow, text=Info2ColText, font=("Courier", 12))
+Info3Col = Label(NewsTransactionWindow, text=Info3ColText, font=("Courier", 12))
+Info4Col = Label(NewsTransactionWindow, text=Info4ColText, font=("Courier", 12))
+Info5Col = Label(NewsTransactionWindow, text=Info5ColText, font=("Courier", 12))
+
+
+
 WarningLabel = Label(NewsTransactionWindow, text="")
 
+
 def addProductToList():
+    Info1ColText = ""
+    Info2ColText = ""
+    Info3ColText = ""
+    Info4ColText = ""
+    Info5ColText = ""
     ProductIDEntryText = ProductIDEntry.get()
     QuantityIDEntryText = QuantityEntry.get()
     FulltextofWarning = Account.makeNewTransaction(ProductIDEntryText, QuantityIDEntryText)
     WarningLabel.config(text=FulltextofWarning)
-    FullList.config(text=Account.showTransactionRecord())
+    for EachRow in Account.showTransactionRecord():
+        Info1ColText = Info1ColText + str(EachRow[0]) + "\n"
+        Info2ColText = Info2ColText + str(EachRow[1]) + "\n"
+        Info3ColText = Info3ColText + str(EachRow[2]) + "\n"
+        Info4ColText = Info4ColText + str(EachRow[3]) + "\n"
+        Info5ColText = Info5ColText + str(EachRow[4]) + "\n"
+    Info1Col.config(text=Info1ColText)
+    Info2Col.config(text=Info2ColText)
+    Info3Col.config(text=Info3ColText)
+    Info4Col.config(text=Info4ColText)
+    Info5Col.config(text=Info5ColText)
+
+    #FullList.config(text=Account.showTransactionRecord())
     # print(Account.makeNewTransaction(ProductIDEntryText, QuantityIDEntryText))
     # print(type(Account.makeNewTransaction(ProductIDEntryText, QuantityIDEntryText)))
 
-FullList.pack(side=TOP)
-WarningLabel.pack(side=TOP)
 
-LastProduct = str(ProductIDEntry.get())
-LastQuantity = str(QuantityEntry.get())
 
-AddProducts = Button(NewsTransactionWindow, text="Add Product ID and Quantity", command=addProductToList).pack(side=TOP)
+Info1Col.grid(row=5, column=0, padx=10)
+Info2Col.grid(row=5, column=1, padx=10)
+Info3Col.grid(row=5, column=2, padx=10)
+Info4Col.grid(row=5, column=3, padx=10)
+Info5Col.grid(row=5, column=5, padx=10)
+
+
+WarningLabel.grid(row=7, column=0)
+
+
+
+AddProducts = Button(NewsTransactionWindow, text="Add Product ID and Quantity", command=addProductToList).grid(row=4, column=0)
+#RemoveProducts = Button(NewsTransactionWindow, text="Remove Last Product ID and Quantity", command=addProductToList).grid(row=4, column=1, columnspan=2, sticky="ew")
+#The Button for to remove products if I will ever add it
+
 
 
 
@@ -468,9 +503,9 @@ AddProducts = Button(NewsTransactionWindow, text="Add Product ID and Quantity", 
 
 
 ClosePOS = Frame(window)
-LabelPOS = Label(ClosePOS, text="Close").pack(side=TOP)
-Yes = Button(ClosePOS, text="Yes", command=window.destroy).pack(side=LEFT)
-No = Button(ClosePOS, text="No", command=show_mainmenu).pack(side=LEFT)
+LabelPOS = Label(ClosePOS, text="Would you like to exit the POS Machine").pack()
+Yes = Button(ClosePOS, text="Yes", command=window.destroy).pack()
+No = Button(ClosePOS, text="No", command=show_mainmenu).pack()
 
 
 window.mainloop()
