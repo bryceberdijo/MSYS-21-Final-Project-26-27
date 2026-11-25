@@ -6,10 +6,6 @@ import os
 from tkinter import *
 from tkinter import filedialog
 
-
-
-
-
 class POSMachine:
     
     def __init__(self):
@@ -26,7 +22,7 @@ class POSMachine:
 
         
         
-    
+    # Saved if ever It is required
     # def start(self): # removed for now to not make it start
     #     """
     #     Update this looping interface.
@@ -59,25 +55,20 @@ class POSMachine:
     #         except:
     #             continue
 
-    
-            
-
-        
-
-                
-    def printWelcomeMessage(self):
-        print("Welcome to the Point of Sales program")
-        print("You will be able to seamlessly track and process sales transactions for each product in your business")
-        print("_________________________________________________________________________________")
+    # This is saved if ever it is required
+    # def printWelcomeMessage(self):
+    #     print("Welcome to the Point of Sales program")
+    #     print("You will be able to seamlessly track and process sales transactions for each product in your business")
+    #     print("_________________________________________________________________________________")
 
             
-    def printAllOptions(self):
-        # Print all actions the user can do
-        print("What do you want to do today? (input the number)")
-        print("1 - Set the price list")
-        print("2 - Show the price list")
-        print("3 - Make a new transaction")
-        print("4 - Close the POS machine")
+    # def printAllOptions(self):
+    #     # Print all actions the user can do
+    #     print("What do you want to do today? (input the number)")
+    #     print("1 - Set the price list")
+    #     print("2 - Show the price list")
+    #     print("3 - Make a new transaction")
+    #     print("4 - Close the POS machine")
     
     def setPriceList(self):
         Original_Directory = os.path.dirname(os.path.abspath(__file__))
@@ -186,39 +177,39 @@ class POSMachine:
             self.__fullTransactionList__.append([self.__priceListofProducts__[numCount][0], self.__priceListofProducts__[numCount][1], self.__priceListofProducts__[numCount][2], quantity, (quantity*ProductPrice)])
         
 
-    def RemoveProductToTransaction(self, productID, quantity):
-        numCount = 0 #Similar to NumCount in the makeNewTransaction method, it will search through each of entry of the list to see which list inside the list has the same product name. NumCount acts as the final location of the selected product inside the list.
-        confirmedDuplicate = False
-        numCountDuplicate = 0
-        for EachProduct in self.__priceListofProducts__:
-            if productID == str(EachProduct[0]):
-                break
-            else:
-                numCount += 1
-        ProductPriceChecking = self.__priceListofProducts__[numCount][2]
-        if ProductPriceChecking == "":
-            ProductPrice = 0
-        else:
-            ProductPrice = int(self.__priceListofProducts__[numCount][2])
-        for EachSale in self.__fullTransactionList__: # This Section determines if the product ID was previous inputted to the invoice
-            if productID == str(EachSale[0]):
-                confirmedDuplicate = True
-                break
-            else:
-                numCountDuplicate += 1
-        if confirmedDuplicate == True: # This Section adds the quantity and cost into the entry that has the same product
-            previousQuantity = self.__fullTransactionList__[numCountDuplicate][3]
-            self.__fullTransactionList__[numCountDuplicate][3] = previousQuantity - quantity
-            previousTotalCost = self.__fullTransactionList__[numCountDuplicate][4]
-            self.__fullTransactionList__[numCountDuplicate][4] = previousTotalCost - (quantity*ProductPrice)
-        else:
-            self.__fullTransactionList__.remove([self.__priceListofProducts__[numCount][0], self.__priceListofProducts__[numCount][1], self.__priceListofProducts__[numCount][2], quantity, (quantity*ProductPrice)])
+    # def RemoveProductToTransaction(self, productID, quantity): # This is the function to remove products from the list of transactions. This is a copy and paste of addProducts to Transaction except it will delete rather than add
+    #     numCount = 0 #Similar to NumCount in the makeNewTransaction method, it will search through each of entry of the list to see which list inside the list has the same product name. NumCount acts as the final location of the selected product inside the list.
+    #     confirmedDuplicate = False
+    #     numCountDuplicate = 0
+    #     for EachProduct in self.__priceListofProducts__:
+    #         if productID == str(EachProduct[0]):
+    #             break
+    #         else:
+    #             numCount += 1
+    #     ProductPriceChecking = self.__priceListofProducts__[numCount][2]
+    #     if ProductPriceChecking == "":
+    #         ProductPrice = 0
+    #     else:
+    #         ProductPrice = int(self.__priceListofProducts__[numCount][2])
+    #     for EachSale in self.__fullTransactionList__: # This Section determines if the product ID was previous inputted to the invoice
+    #         if productID == str(EachSale[0]):
+    #             confirmedDuplicate = True
+    #             break
+    #         else:
+    #             numCountDuplicate += 1
+    #     if confirmedDuplicate == True: # This Section adds the quantity and cost into the entry that has the same product
+    #         previousQuantity = self.__fullTransactionList__[numCountDuplicate][3]
+    #         self.__fullTransactionList__[numCountDuplicate][3] = previousQuantity - quantity
+    #         previousTotalCost = self.__fullTransactionList__[numCountDuplicate][4]
+    #         self.__fullTransactionList__[numCountDuplicate][4] = previousTotalCost - (quantity*ProductPrice)
+    #     else:
+    #         self.__fullTransactionList__.remove([self.__priceListofProducts__[numCount][0], self.__priceListofProducts__[numCount][1], self.__priceListofProducts__[numCount][2], quantity, (quantity*ProductPrice)])
                 
     
     def createSalesInvoice(self):
         AllProducts = []
         if len(self.__fullTransactionList__) == 0:
-            return "No Transactions Listed"
+            pass
         else:
             title = "Sales Invoice"
             Labels = "{0}\t{1}\t{2}\t{3}\t{4}".format("ID", "Product", "Price", "Quantity", "Total")
@@ -229,16 +220,14 @@ class POSMachine:
                 AllProducts.append("{0}\t{1}\t{2}\t{3}\t{4}".format(EachProduct[0], EachProduct[1], EachProduct[2], EachProduct[3], EachProduct[4]))
                 GrandTotal += int(EachProduct[4])
             AllProducts.append("\tGrand Total: \t{0}\t\t".format(GrandTotal))
-            #NewInvoiceFile = open("invoice.txt", "w")
-            NewLabel = ""
+            NewInvoiceFile = open("invoice.txt", "w")
+
             for x in AllProducts:
-                # NewInvoiceFile.write("{0}\n".format(x))
-                NewLabel = NewLabel + x
-            #NewInvoiceFile.close()
+                NewInvoiceFile.write("{0}\n".format(x))
+            NewInvoiceFile.close()
             for EachProductbought in self.__fullTransactionList__:
                 self.__TransactionHistory__.append(EachProductbought)
             self.__fullTransactionList__.clear()
-            return NewLabel
 
 
     def showTransactionRecord(self):
@@ -254,15 +243,7 @@ class POSMachine:
                 GrandTotal += int(EachProduct[4])
             AllProducts.append(["Grand Total: ",""," ", "", str(GrandTotal)])  
         return AllProducts
-            
-    # def printPriceList(self):
-    #     FullListofProducts = ""
-    #     if len(self.__priceListofProducts__) == 0:
-    #         FullListofProducts = FullListofProducts + "No list Inputted"
-    #     else:
-    #         for EachProduct in self.__priceListofProducts__:
-    #             FullListofProducts = FullListofProducts + "{0: <4} {1: <50} {2}\n".format(EachProduct[0], EachProduct[1], EachProduct[2])
-    #     return FullListofProducts
+
 
 
     def SalesReport(self):
@@ -283,10 +264,8 @@ class POSMachine:
                 ShownTransactionHistory[numCountDuplicate][4] = previousTotalSales + EachSalesRecord[4]
             else:
                 ShownTransactionHistory.append(EachSalesRecord)
-        Saleshistory = ""
-        for Sale in ShownTransactionHistory:
-            print(Sale)
-            #Saleshistory = Saleshistory + "{0}\t{1}\t{2}\t{3}\t{4}".format(Sale[0], Sale[1], Sale[2], Sale[3], Sale[4])
+        return ShownTransactionHistory
+
 
 
 
@@ -294,75 +273,21 @@ class POSMachine:
 
 Account = POSMachine()
 
-# Sources
-# Built-in functions. (n.d.-d). Python Documentation. https://docs.python.org/3/builtins/functions.html
-# pandas.Series.tolist — pandas 2.1.4 documentation. (n.d.). https://pandas.pydata.org/pandas-docs/version/2.1/reference/api/pandas.Series.tolist.html
-# pandas.DataFrame.to_numpy — pandas 3.1.1 documentation. (n.d.). https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_numpy.html#pandas.DataFrame.to_numpy
-# pandas.DataFrame.columns — pandas 3.1.1 documentation. (n.d.). https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.columns.html
-# os.path — Common pathname manipulations. (n.d.). Python Documentation. https://docs.python.org/3/library/os.path.html
-# Tkinter dialogs. (n.d.). Python Documentation. https://docs.python.org/3/library/dialog.html?
+
 
 window = Tk()
 window.title("POS Machine")
 
-window.geometry("500x500")
-
-# label = Label(window, text="POS Machine")
-
-# label.grid(row=0, column=0)
-
-# Label2 = Label(window, text="test 1")
-# Label2.grid(row=1, column=1)
-
-
-# def show_frame2():
-#     frame1.pack_forget()
-#     frame3.pack_forget() 
-#     frame2.pack(fill="both", expand=True)
-
-# def show_frame1():
-#     frame2.pack_forget()
-#     frame3.pack_forget() 
-#     frame1.pack(fill="both", expand=True)
-
-# def show_frame3():
-#     frame1.pack_forget()
-#     frame2.pack_forget()
-#     frame3.pack(fill="both", expand=True)
-
-
-
-# frame1 = Frame(window)
-# Label1 = Label(frame1, text="This is Frame 1")
-# Label1.grid(row=1, column=0)
-# label1A = Label(frame1, text="POS Machine")
-# label1A.grid(row=0, column=0)
-# Button1 = Button(frame1, text="Switch to Frame 2", command=show_frame2).grid(row=2, column=0)
-# Button2 = Button(frame1, text="Switch to Frame 3", command=show_frame3).grid(row=3, column=0)
-
-# frame2 = Frame(window)
-# Label2 = Label(frame2, text="This is Frame 2").pack(pady=20)
-# Button2 = Button(frame2, text="Switch to Frame 1", command=show_frame1).pack()
-
-# frame3 = Frame(window)
-# Label3 = Label(frame3, text="This is Frame 3").pack(pady=20)
-# Button3 = Button(frame3, text="Switch to Frame 2", command=show_frame2).pack(pady=30)
-# Button3A = Button(frame3, text="Switch to Frame 1", command=show_frame1).pack(pady=30)
-
-
-# frame1.pack(fill="both", expand=True)
+window.geometry("1000x1000")
 
 
 def show_SetPriceList():
     MainMenu.pack_forget()
     SetPriceList.pack(fill="both", expand=True)
-    
-
 
 def show_NewsTransactionWindow():
     MainMenu.pack_forget()
     NewsTransactionWindow.pack(fill="both", expand=True)
-
 
 def show_ClosePOS():
     MainMenu.pack_forget()
@@ -381,6 +306,7 @@ def show_mainmenu():
     WarningLabel.config(text="")
     MainMenu.pack(fill="both", expand=True)
 
+#Main Menu - __________________________________________________________________________________________________
 MainMenu = Frame(window)
 
 Label1 = Label(MainMenu, text="This is the POS Machine Main Menu").pack()
@@ -389,12 +315,10 @@ ShowSales = Button(MainMenu, text="Show Sales Report", command=show_ShowSales).p
 NewsTransaction = Button(MainMenu, text="Make news transaction", command=show_NewsTransactionWindow).pack()
 ClosePOSMachine = Button(MainMenu, text="Exit", command=show_ClosePOS).pack()
 
-
-
-
-
 MainMenu.pack(fill="both", expand=True)
+#__________________________________________________________________________________________________
 
+#Setting the Price List and Viewing the List - __________________________________________________________________________________________________
 SetPriceList = Frame(window)
 Label2 = Label(SetPriceList, text="Set and View the PriceList").grid(row=1, column=0)
 contents = Label(SetPriceList, text=Account.printPriceList(), anchor="w", justify="left")
@@ -410,26 +334,60 @@ def OpenFileForPriceList():
 
 SetPrice = Button(SetPriceList, text="Select the Price List (.txt and .csv files only)", command=OpenFileForPriceList).grid(row=1, column=1)
 BacktoMenu1 = Button(SetPriceList, text="Back to main Menu", command=show_mainmenu).grid(row=1, column=3)
+#__________________________________________________________________________________________________
 
-
-
+#Showing Sales Report - __________________________________________________________________________________________________
 ShowSales = Frame(window)
-LabelSaes = Label(ShowSales, text="show Sales report").pack(side=TOP)
-BacktoMenu2 = Button(ShowSales, text="Back to main Menu", command=show_mainmenu).pack(side=LEFT)
+LabelSaes = Label(ShowSales, text="Sales report").grid(row=1, column=0)
+BacktoMenu2 = Button(ShowSales, text="Back to main Menu", command=show_mainmenu).grid(row=2, column=0)
+SalesInfo1ColText = ""
+SalesInfo2ColText = ""
+SalesInfo3ColText = ""
+SalesInfo4ColText = ""
+SalesInfo5ColText = ""
+SalesInfo1Col = Label(ShowSales, text=SalesInfo1ColText, font=("Courier", 12))
+SalesInfo2Col = Label(ShowSales, text=SalesInfo2ColText, font=("Courier", 12))
+SalesInfo3Col = Label(ShowSales, text=SalesInfo3ColText, font=("Courier", 12))
+SalesInfo4Col = Label(ShowSales, text=SalesInfo4ColText, font=("Courier", 12))
+SalesInfo5Col = Label(ShowSales, text=SalesInfo5ColText, font=("Courier", 12))
+
+SalesInfo1Col.grid(row=3, column=0, padx=5)
+SalesInfo2Col.grid(row=3, column=1, padx=5)
+SalesInfo3Col.grid(row=3, column=2, padx=5)
+SalesInfo4Col.grid(row=3, column=3, padx=5)
+SalesInfo5Col.grid(row=3, column=5, padx=5)
+
+def UpdateSalesReport():
+    SalesInfo1ColText = ""
+    SalesInfo2ColText = ""
+    SalesInfo3ColText = ""
+    SalesInfo4ColText = ""
+    SalesInfo5ColText = ""
+    for EachRow in Account.SalesReport():
+        SalesInfo1ColText = SalesInfo1ColText + str(EachRow[0]) + "\n"
+        SalesInfo2ColText = SalesInfo2ColText + str(EachRow[1]) + "\n"
+        SalesInfo3ColText = SalesInfo3ColText + str(EachRow[2]) + "\n"
+        SalesInfo4ColText = SalesInfo4ColText + str(EachRow[3]) + "\n"
+        SalesInfo5ColText = SalesInfo5ColText + str(EachRow[4]) + "\n"
+    SalesInfo1Col.config(text=SalesInfo1ColText)
+    SalesInfo2Col.config(text=SalesInfo2ColText)
+    SalesInfo3Col.config(text=SalesInfo3ColText)
+    SalesInfo4Col.config(text=SalesInfo4ColText)
+    SalesInfo5Col.config(text=SalesInfo5ColText)
+#__________________________________________________________________________________________________
 
 
+#Making the transaction - __________________________________________________________________________________________________
 NewsTransactionWindow = Frame(window)
 Label4 = Label(NewsTransactionWindow, text="Make Transaction").grid(row=0, column=0)
 BacktoMenu3 = Button(NewsTransactionWindow, text="Back to main Menu", command=show_mainmenu).grid(row=1, column=0)
+
 ProductIDEntry = Entry(NewsTransactionWindow)
 ProductIDEntry.grid(row=2, column=0, columnspan=4, sticky="ew")
 
 
 QuantityEntry = Entry(NewsTransactionWindow)
 QuantityEntry.grid(row=3, column=0, columnspan=4, sticky="ew")
-PrintPrice = Button(NewsTransactionWindow, text="Make Invoice", command=show_mainmenu).grid(row=2, column=5, rowspan=2, sticky="ew")
-
-
 
 
 NewlyAdded = False
@@ -446,10 +404,7 @@ Info3Col = Label(NewsTransactionWindow, text=Info3ColText, font=("Courier", 12))
 Info4Col = Label(NewsTransactionWindow, text=Info4ColText, font=("Courier", 12))
 Info5Col = Label(NewsTransactionWindow, text=Info5ColText, font=("Courier", 12))
 
-
-
 WarningLabel = Label(NewsTransactionWindow, text="")
-
 
 def addProductToList():
     Info1ColText = ""
@@ -473,39 +428,52 @@ def addProductToList():
     Info4Col.config(text=Info4ColText)
     Info5Col.config(text=Info5ColText)
 
-    #FullList.config(text=Account.showTransactionRecord())
-    # print(Account.makeNewTransaction(ProductIDEntryText, QuantityIDEntryText))
-    # print(type(Account.makeNewTransaction(ProductIDEntryText, QuantityIDEntryText)))
 
+def newInvoice():
+    Account.createSalesInvoice()
+    Info1Col.config(text="")
+    Info2Col.config(text="")
+    Info3Col.config(text="")
+    Info4Col.config(text="")
+    Info5Col.config(text="")
+    UpdateSalesReport()
 
-
-Info1Col.grid(row=5, column=0, padx=10)
-Info2Col.grid(row=5, column=1, padx=10)
-Info3Col.grid(row=5, column=2, padx=10)
-Info4Col.grid(row=5, column=3, padx=10)
-Info5Col.grid(row=5, column=5, padx=10)
-
+Info1Col.grid(row=5, column=0, padx=5)
+Info2Col.grid(row=5, column=1, padx=5)
+Info3Col.grid(row=5, column=2, padx=5)
+Info4Col.grid(row=5, column=3, padx=5)
+Info5Col.grid(row=5, column=5, padx=5)
 
 WarningLabel.grid(row=7, column=0)
-
+#__________________________________________________________________________________________________
 
 
 AddProducts = Button(NewsTransactionWindow, text="Add Product ID and Quantity", command=addProductToList).grid(row=4, column=0)
 #RemoveProducts = Button(NewsTransactionWindow, text="Remove Last Product ID and Quantity", command=addProductToList).grid(row=4, column=1, columnspan=2, sticky="ew")
 #The Button for to remove products if I will ever add it
 
+PrintInvoice = Button(NewsTransactionWindow, text="Make Invoice", command=newInvoice).grid(row=2, column=5, rowspan=2, sticky="ew")
 
 
 
 
 
 
-
-
+#Closing the POS Machine - __________________________________________________________________________________________________
 ClosePOS = Frame(window)
 LabelPOS = Label(ClosePOS, text="Would you like to exit the POS Machine").pack()
 Yes = Button(ClosePOS, text="Yes", command=window.destroy).pack()
 No = Button(ClosePOS, text="No", command=show_mainmenu).pack()
-
+#__________________________________________________________________________________________________
 
 window.mainloop()
+
+# Sources
+# Built-in functions. (n.d.). Python Documentation. https://docs.python.org/3/builtins/functions.html#open
+# os.path — Common pathname manipulations. (n.d.). Python Documentation. https://docs.python.org/3/library/os.path.html
+# tkinter — Python interface to Tcl/Tk. (n.d.). Python Documentation. https://docs.python.org/3/library/tkinter.html
+# pandas.DataFrame.to_numpy — pandas 3.1.1 documentation. (n.d.). https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_numpy.html#pandas.DataFrame.to_numpy
+# pandas.DataFrame.columns — pandas 3.1.1 documentation. (n.d.-a). https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.columns.html
+# pandas.Series.tolist — pandas 2.1.4 documentation. (n.d.). https://pandas.pydata.org/pandas-docs/version/2.1/reference/api/pandas.Series.tolist.html
+# GeeksforGeeks. (2026, March 24). Python | grid() method in Tkinter. GeeksforGeeks. https://www.geeksforgeeks.org/python/python-grid-method-in-tkinter/
+# Sharma, P. (2026, March 25). How to switch between two frames in Tkinter? Tutorial Point. https://www.tutorialspoint.com/article/how-to-switch-between-two-frames-in-tkinter
