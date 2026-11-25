@@ -134,12 +134,12 @@ class POSMachine:
                         ProductQuantity = Quantity
                         if ProductQuantity == "":
                             return "Please Enter a quantity"
-                        elif int(ProductQuantity) >= 1:
+                        elif ProductQuantity >= 1:
                             QuantityExist = True
                         else:
                             return "Please Enter a quantity more than 1"
                         if QuantityExist == True:
-                            self.addProductToTransaction(ProductInputted, int(ProductQuantity))
+                            self.addProductToTransaction(ProductInputted, ProductQuantity)
                             return ""
                             # break # because instructions were unclear if the makeNewTransaction method must be constantly loop until the user gives a blank input and prints the invoice, I have added a "break" to stop the loop to go back into the main Start() method
                     else:
@@ -248,6 +248,8 @@ class POSMachine:
 
     def SalesReport(self):
         ShownTransactionHistory = []
+        Labels = ["ID", "Product", "Price", "Quantity", "Total"]
+        ShownTransactionHistory.append(Labels)
         for EachSalesRecord in self.__TransactionHistory__:
             DuplicateConfirmed = False
             numCountDuplicate = 0
@@ -264,6 +266,10 @@ class POSMachine:
                 ShownTransactionHistory[numCountDuplicate][4] = previousTotalSales + EachSalesRecord[4]
             else:
                 ShownTransactionHistory.append(EachSalesRecord)
+        GrandTotal = 0
+        for EachSalesRecord in self.__TransactionHistory__:
+            GrandTotal += int(EachSalesRecord[4])
+        ShownTransactionHistory.append(["Grand Total: ",""," ", "", str(GrandTotal)])
         return ShownTransactionHistory
 
 
@@ -413,20 +419,25 @@ def addProductToList():
     Info4ColText = ""
     Info5ColText = ""
     ProductIDEntryText = ProductIDEntry.get()
-    QuantityIDEntryText = QuantityEntry.get()
-    FulltextofWarning = Account.makeNewTransaction(ProductIDEntryText, QuantityIDEntryText)
-    WarningLabel.config(text=FulltextofWarning)
-    for EachRow in Account.showTransactionRecord():
-        Info1ColText = Info1ColText + str(EachRow[0]) + "\n"
-        Info2ColText = Info2ColText + str(EachRow[1]) + "\n"
-        Info3ColText = Info3ColText + str(EachRow[2]) + "\n"
-        Info4ColText = Info4ColText + str(EachRow[3]) + "\n"
-        Info5ColText = Info5ColText + str(EachRow[4]) + "\n"
-    Info1Col.config(text=Info1ColText)
-    Info2Col.config(text=Info2ColText)
-    Info3Col.config(text=Info3ColText)
-    Info4Col.config(text=Info4ColText)
-    Info5Col.config(text=Info5ColText)
+    try:
+        QuantityIDEntryText = int(QuantityEntry.get())
+        FulltextofWarning = Account.makeNewTransaction(ProductIDEntryText, QuantityIDEntryText)
+        WarningLabel.config(text=FulltextofWarning)
+        if ProductIDEntryText != "" and QuantityIDEntryText > 0:
+            for EachRow in Account.showTransactionRecord():
+                Info1ColText = Info1ColText + str(EachRow[0]) + "\n"
+                Info2ColText = Info2ColText + str(EachRow[1]) + "\n"
+                Info3ColText = Info3ColText + str(EachRow[2]) + "\n"
+                Info4ColText = Info4ColText + str(EachRow[3]) + "\n"
+                Info5ColText = Info5ColText + str(EachRow[4]) + "\n"
+            Info1Col.config(text=Info1ColText)
+            Info2Col.config(text=Info2ColText)
+            Info3Col.config(text=Info3ColText)
+            Info4Col.config(text=Info4ColText)
+            Info5Col.config(text=Info5ColText)
+    except:
+        WarningLabel.config(text="Please input a number")
+    
 
 
 def newInvoice():
