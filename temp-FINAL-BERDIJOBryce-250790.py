@@ -80,7 +80,8 @@ class POSMachine:
         print("4 - Close the POS machine")
     
     def setPriceList(self):
-        FileofProductListInitial = filedialog.askopenfilename(
+        Original_Directory = os.path.dirname(os.path.abspath(__file__))
+        FileofProductListInitial = filedialog.askopenfilename(initialdir=Original_Directory,
             title="Select a file",
             filetypes=[("Text files", "*.txt"), ("CSV files", "*.csv"), ("All files", "*.*")],
         ) 
@@ -117,16 +118,16 @@ class POSMachine:
             FullListofProducts = FullListofProducts + "No list Inputted"
         else:
             for EachProduct in self.__priceListofProducts__:
-                FullListofProducts = FullListofProducts + "{0: <4} {1: <35} {2}\n".format(EachProduct[0], EachProduct[1], EachProduct[2])
+                FullListofProducts = FullListofProducts + "{0: <4} {1: <50} {2}\n".format(EachProduct[0], EachProduct[1], EachProduct[2])
         return FullListofProducts
 
     
-    def makeNewTransaction(self):
+    def makeNewTransaction(self, Product, Quantity):
         if len(self.__priceListofProducts__) == 0 :
             print("List of Products in Empty")
         else:
             while True:    
-                ProductInputted = input("Input the Product ")
+                ProductInputted = Product
                 if ProductInputted == "":
                     self.createSalesInvoice()
                     break # This will break the loop and print the transaction
@@ -336,6 +337,7 @@ window.geometry("500x500")
 def show_SetPriceList():
     MainMenu.pack_forget()
     SetPriceList.pack(fill="both", expand=True)
+    
 
 
 def show_NewsTransactionWindow():
@@ -355,16 +357,17 @@ def show_mainmenu():
     SetPriceList.pack_forget()
     ClosePOS.pack_forget()
     ShowSales.pack_forget()
+    NoFile.config(text="")
     NewsTransactionWindow.pack_forget()
     MainMenu.pack(fill="both", expand=True)
 
 MainMenu = Frame(window)
 
-Label1 = Label(MainMenu, text="This is the POS Machine Main Menu").grid(row=0, column=0)
-SetPrice = Button(MainMenu, text="Set Price List", command=show_SetPriceList).grid(row=1, column=0)
-ShowSales = Button(MainMenu, text="Show Sales Report", command=show_ShowSales).grid(row=2, column=0)
-NewsTransaction = Button(MainMenu, text="Make news transaction", command=show_NewsTransactionWindow).grid(row=3, column=0)
-ClosePOSMachine = Button(MainMenu, text="Exit", command=show_ClosePOS).grid(row=4, column=0)
+Label1 = Label(MainMenu, text="This is the POS Machine Main Menu").pack()
+SetPrice = Button(MainMenu, text="Set Price List", command=show_SetPriceList).pack()
+ShowSales = Button(MainMenu, text="Show Sales Report", command=show_ShowSales).pack()
+NewsTransaction = Button(MainMenu, text="Make news transaction", command=show_NewsTransactionWindow).pack()
+ClosePOSMachine = Button(MainMenu, text="Exit", command=show_ClosePOS).pack()
 
 
 
@@ -373,11 +376,11 @@ ClosePOSMachine = Button(MainMenu, text="Exit", command=show_ClosePOS).grid(row=
 MainMenu.pack(fill="both", expand=True)
 
 SetPriceList = Frame(window)
-Label2 = Label(SetPriceList, text="SetPriceList").pack(side=LEFT)
-contents = Label(SetPriceList, text=Account.printPriceList())
-contents.pack(side=BOTTOM, expand=True, fill=BOTH)
+Label2 = Label(SetPriceList, text="Set and View the PriceList").grid(row=1, column=0)
+contents = Label(SetPriceList, text=Account.printPriceList(), anchor="w", justify="left")
+contents.grid(row=2, column=0)
 NoFile = Label(SetPriceList, text="")
-NoFile.pack(side=BOTTOM, expand=True, fill=BOTH)
+NoFile.grid(row=3, column=0)
 
 
 def OpenFileForPriceList():
@@ -385,8 +388,8 @@ def OpenFileForPriceList():
     contents.config(text=Account.printPriceList())
 
 
-SetPrice = Button(SetPriceList, text="Pick File", command=OpenFileForPriceList).pack(side=TOP)
-BacktoMenu1 = Button(SetPriceList, text="Back to main Menu", command=show_mainmenu).pack(side=TOP)
+SetPrice = Button(SetPriceList, text="Select the Price List (.txt and .csv files only)", command=OpenFileForPriceList).grid(row=1, column=1)
+BacktoMenu1 = Button(SetPriceList, text="Back to main Menu", command=show_mainmenu).grid(row=1, column=3)
 
 
 
@@ -397,7 +400,20 @@ BacktoMenu2 = Button(ShowSales, text="Back to main Menu", command=show_mainmenu)
 
 NewsTransactionWindow = Frame(window)
 Label4 = Label(NewsTransactionWindow, text="Make Transaction").pack(side=TOP)
-BacktoMenu3 = Button(NewsTransactionWindow, text="Back to main Menu", command=show_mainmenu).pack(side=LEFT)
+BacktoMenu3 = Button(NewsTransactionWindow, text="Back to main Menu", command=show_mainmenu).pack(side=TOP)
+ProductIDEntry = Entry(NewsTransactionWindow)
+ProductIDEntry.pack(side=TOP, expand=True, fill=BOTH)
+
+
+QuantityEntry = Entry(NewsTransactionWindow)
+QuantityEntry.pack(side=TOP, expand=True, fill=BOTH)
+
+LastProduct = ""
+LastQuantity = ""
+
+def addProductToList():
+    ProductEntryText = ProductIDEntry.get()
+
 
 
 ClosePOS = Frame(window)
@@ -405,7 +421,5 @@ LabelPOS = Label(ClosePOS, text="Close").pack(side=TOP)
 Yes = Button(ClosePOS, text="Yes", command=window.destroy).pack(side=LEFT)
 No = Button(ClosePOS, text="No", command=show_mainmenu).pack(side=LEFT)
 
-
-print(Account.printPriceList())
 
 window.mainloop()
