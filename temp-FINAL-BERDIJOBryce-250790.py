@@ -124,13 +124,11 @@ class POSMachine:
     
     def makeNewTransaction(self, Product, Quantity):
         if len(self.__priceListofProducts__) == 0 :
-            print("List of Products in Empty")
-        else:
-            while True:    
+            return "List of Products in Empty"
+        else:  
                 ProductInputted = Product
                 if ProductInputted == "":
-                    self.createSalesInvoice()
-                    break # This will break the loop and print the transaction
+                    return "Please Enter the ID Product" # This will break the loop and print the transaction
                 else:
                     ProductExist = False
                     NumCount = 0 # Since the for loop is going through each list in the list of products, it will stop the moment the loop arrives at ProductInputted
@@ -142,24 +140,17 @@ class POSMachine:
                             NumCount += 1
                     if ProductExist == True: # Since the Product that the user inputs is Valid, the code will ask the use for a number
                         QuantityExist = False
-                        while True:
-                            try:
-                                ProductQuantity = input("Input the Quantity ")
-                                if ProductQuantity == "":
-                                    self.createSalesInvoice()
-                                    break
-                                elif int(ProductQuantity) >= 1:
-                                    QuantityExist = True
-                                    break
-                                else:
-                                    continue
-                            except:
-                                continue
+                        ProductQuantity = Quantity
+                        if ProductQuantity == "":
+                            return "Please Enter a quantity"
+                        elif int(ProductQuantity) >= 1:
+                            QuantityExist = True
+                        else:
+                            return "Please Enter a quantity more than 1"
                         if QuantityExist == True:
                             self.addProductToTransaction(ProductInputted, int(ProductQuantity))
+                            return ""
                             # break # because instructions were unclear if the makeNewTransaction method must be constantly loop until the user gives a blank input and prints the invoice, I have added a "break" to stop the loop to go back into the main Start() method
-                        else:
-                            break
                     else:
                         return "Product ID does not exist. Please input the Product ID"
             
@@ -227,7 +218,7 @@ class POSMachine:
     def createSalesInvoice(self):
         AllProducts = []
         if len(self.__fullTransactionList__) == 0:
-            print("No Transactions Listed")
+            return "No Transactions Listed"
         else:
             title = "Sales Invoice"
             Labels = "{0}\t{1}\t{2}\t{3}\t{4}".format("ID", "Product", "Price", "Quantity", "Total")
@@ -238,13 +229,46 @@ class POSMachine:
                 AllProducts.append("{0}\t{1}\t{2}\t{3}\t{4}".format(EachProduct[0], EachProduct[1], EachProduct[2], EachProduct[3], EachProduct[4]))
                 GrandTotal += int(EachProduct[4])
             AllProducts.append("\t\t\tGrand Total {0}".format(GrandTotal))
-            NewInvoiceFile = open("invoice.txt", "w")
+            #NewInvoiceFile = open("invoice.txt", "w")
+            NewLabel = ""
             for x in AllProducts:
-                NewInvoiceFile.write("{0}\n".format(x))
-            NewInvoiceFile.close()
+                # NewInvoiceFile.write("{0}\n".format(x))
+                NewLabel = NewLabel + x
+            #NewInvoiceFile.close()
             for EachProductbought in self.__fullTransactionList__:
                 self.__TransactionHistory__.append(EachProductbought)
             self.__fullTransactionList__.clear()
+            return NewLabel
+
+
+    def showTransactionRecord(self):
+        AllProducts = []
+        NewLabel = ""
+        if len(self.__fullTransactionList__) == 0:
+            NewLabel = NewLabel + "No Products Listed"
+        else:
+            title = "Sales Invoice"
+            Labels = "{0}\t{1}\t{2}\t{3}\t{4}".format("ID", "Product", "Price", "Quantity", "Total")
+            AllProducts.append(title)
+            AllProducts.append(Labels)
+            GrandTotal = 0
+            for EachProduct in self.__fullTransactionList__:
+                AllProducts.append("{0}\t{1}\t{2}\t{3}\t{4}".format(EachProduct[0], EachProduct[1], EachProduct[2], EachProduct[3], EachProduct[4]))
+                GrandTotal += int(EachProduct[4])
+            AllProducts.append("\t\t\tGrand Total {0}".format(GrandTotal))
+            for x in AllProducts:
+                NewLabel = NewLabel + x + "\n"      
+        return NewLabel
+            
+    # def printPriceList(self):
+    #     FullListofProducts = ""
+    #     if len(self.__priceListofProducts__) == 0:
+    #         FullListofProducts = FullListofProducts + "No list Inputted"
+    #     else:
+    #         for EachProduct in self.__priceListofProducts__:
+    #             FullListofProducts = FullListofProducts + "{0: <4} {1: <50} {2}\n".format(EachProduct[0], EachProduct[1], EachProduct[2])
+    #     return FullListofProducts
+
 
     def SalesReport(self):
         ShownTransactionHistory = []
@@ -359,6 +383,7 @@ def show_mainmenu():
     ShowSales.pack_forget()
     NoFile.config(text="")
     NewsTransactionWindow.pack_forget()
+    WarningLabel.config(text="")
     MainMenu.pack(fill="both", expand=True)
 
 MainMenu = Frame(window)
@@ -402,17 +427,43 @@ NewsTransactionWindow = Frame(window)
 Label4 = Label(NewsTransactionWindow, text="Make Transaction").pack(side=TOP)
 BacktoMenu3 = Button(NewsTransactionWindow, text="Back to main Menu", command=show_mainmenu).pack(side=TOP)
 ProductIDEntry = Entry(NewsTransactionWindow)
-ProductIDEntry.pack(side=TOP, expand=True, fill=BOTH)
+ProductIDEntry.pack(side=TOP, expand=True, fill=X)
 
 
 QuantityEntry = Entry(NewsTransactionWindow)
-QuantityEntry.pack(side=TOP, expand=True, fill=BOTH)
+QuantityEntry.pack(side=TOP, expand=True, fill=X)
+
+
+
+
 
 LastProduct = ""
 LastQuantity = ""
 
+FullList = Label(NewsTransactionWindow, text=Account.showTransactionRecord(), font=("Courier", 12))
+WarningLabel = Label(NewsTransactionWindow, text="")
+
 def addProductToList():
-    ProductEntryText = ProductIDEntry.get()
+    ProductIDEntryText = ProductIDEntry.get()
+    QuantityIDEntryText = QuantityEntry.get()
+    FulltextofWarning = Account.makeNewTransaction(ProductIDEntryText, QuantityIDEntryText)
+    WarningLabel.config(text=FulltextofWarning)
+    FullList.config(text=Account.showTransactionRecord())
+    # print(Account.makeNewTransaction(ProductIDEntryText, QuantityIDEntryText))
+    # print(type(Account.makeNewTransaction(ProductIDEntryText, QuantityIDEntryText)))
+
+FullList.pack(side=TOP)
+WarningLabel.pack(side=TOP)
+
+LastProduct = str(ProductIDEntry.get())
+LastQuantity = str(QuantityEntry.get())
+
+AddProducts = Button(NewsTransactionWindow, text="Add Product ID and Quantity", command=addProductToList).pack(side=TOP)
+
+
+
+
+
 
 
 
